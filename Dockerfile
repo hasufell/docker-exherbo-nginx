@@ -14,6 +14,7 @@ RUN chgrp paludisbuild /dev/tty && \
 	cave sync && \
 	cave resolve -z -1 repository/net -x && \
 	cave resolve -z -1 repository/hasufell -x && \
+	cave resolve -z -1 repository/python -x && \
 	cave update-world -s nginx && \
 	cave resolve -c world -x -f --permit-old-version '*/*' && \
 	cave resolve -c world -x --permit-old-version '*/*' && \
