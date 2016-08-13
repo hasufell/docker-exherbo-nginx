@@ -41,5 +41,8 @@ EXPOSE 80 443
 # create common group to be able to synchronize permissions to shared data volumes
 RUN groupadd -g 777 www
 
+# create missing tmp folder
+RUN mkdir /tmp/nginx
+
 CMD exec /usr/bin/supervisord -n -c /etc/supervisord.conf
 
