@@ -18,6 +18,7 @@ RUN chgrp paludisbuild /dev/tty && \
 	cave update-world -s nginx && \
 	cave resolve -c world -x -f --permit-old-version '*/*' && \
 	cave resolve -c world -x --permit-old-version '*/*' && \
+	cave purge -x && \
 	cave fix-linkage -x && \
 	rm -rf /usr/portage/distfiles/*
 
