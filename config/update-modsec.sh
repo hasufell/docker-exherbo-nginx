@@ -11,7 +11,7 @@ if [[ -e /etc/nginx/modsecurity/modsecurity.conf.orig ]] ; then
 	while true; do
 		if [[ $(date +%H) == 23 ]] ; then
 			cd /etc/modsecurity || die
-			git pull --depth=1 origin master || die
+			git pull origin master || die
 			cat /etc/nginx/modsecurity/modsecurity.conf.orig \
 				> /etc/nginx/modsecurity/modsecurity.conf || die
 			cat /etc/modsecurity/base_rules/*.conf \
