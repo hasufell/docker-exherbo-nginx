@@ -15,6 +15,12 @@ RUN chgrp paludisbuild /dev/tty && \
 	cave resolve -z -1 repository/net -x && \
 	cave resolve -z -1 repository/hasufell -x && \
 	cave resolve -z -1 repository/python -x && \
+	cave resolve -c modsecurity -x && \
+	git clone https://github.com/SpiderLabs/ModSecurity.git /usr/src/modsecurity && \
+	cd /usr/src/modsecurity && \
+	./autogen.sh && \
+	./configure --enable-standalone-module --disable-mlogc && \
+	make && \
 	cave update-world -s nginx && \
 	cave resolve -c world -x -f --permit-old-version '*/*' && \
 	cave resolve -c world -x --permit-old-version '*/*' && \
@@ -31,6 +37,20 @@ RUN eclectic config accept-all
 COPY ./config/nginx.conf /etc/nginx/nginx.conf
 COPY ./config/sites-enabled /etc/nginx/sites-enabled
 COPY ./config/sites-available /etc/nginx/sites-available
+
+# set up modescurity
+RUN git clone --depth=1 https://github.com/SpiderLabs/owasp-modsecurity-crs.git \
+	/etc/modsecurity
+RUN mkdir /etc/nginx/modsecurity && \
+	cat /etc/modsecurity/base_rules/*.conf >> \
+	/etc/nginx/modsecurity/modsecurity.conf && \
+	cp /etc/modsecurity/base_rules/*.data /etc/nginx/modsecurity/ && \
+	cp /usr/src/modsecurity/unicode.mapping /etc/nginx/modsecurity/
+RUN sed -i \
+		-e 's|SecRuleEngine .*$|SecRuleEngine On|' \
+		/etc/nginx/modsecurity/modsecurity.conf
+COPY ./config/update-modsec.sh /usr/bin/update-modsec.sh
+RUN chmod +x /usr/bin/update-modsec.sh
 
 # supervisor config
 COPY ./config/supervisord.conf /etc/supervisord.conf
