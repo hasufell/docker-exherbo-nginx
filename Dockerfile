@@ -22,10 +22,10 @@ RUN chgrp paludisbuild /dev/tty && \
 	./configure --enable-standalone-module --disable-mlogc && \
 	make && \
 	cave update-world -s nginx && \
-	cave resolve -c world -x -f --permit-old-version '*/*' && \
-	cave resolve -c world -x --permit-old-version '*/*' && \
+	cave resolve -c world -x -f --permit-old-version '*/*' --without sys-apps/paludis && \
+	cave resolve -c world -x --permit-old-version '*/*' --without sys-apps/paludis && \
 	cave purge -x && \
-	cave fix-linkage -x && \
+	cave fix-linkage -x -- --without sys-apps/paludis && \
 	rm -rf /usr/portage/distfiles/*
 
 RUN eclectic config accept-all
@@ -50,9 +50,9 @@ RUN mkdir /etc/nginx/modsecurity && \
 	cp /usr/src/modsecurity/unicode.mapping /etc/nginx/modsecurity/
 RUN git clone --depth=1 https://github.com/SpiderLabs/owasp-modsecurity-crs.git \
 	/etc/modsecurity
-RUN cat /etc/modsecurity/base_rules/*.conf >> \
+RUN cat /etc/modsecurity/rules/*.conf >> \
 	/etc/nginx/modsecurity/modsecurity.conf && \
-	cp /etc/modsecurity/base_rules/*.data /etc/nginx/modsecurity/
+	cp /etc/modsecurity/rules/*.data /etc/nginx/modsecurity/
 COPY ./config/update-modsec.sh /usr/bin/update-modsec.sh
 RUN chmod +x /usr/bin/update-modsec.sh
 
